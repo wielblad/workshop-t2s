@@ -22,19 +22,59 @@ def home():
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Global Azure 2025</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                min-height: 100vh;
+                background: linear-gradient(135deg, #4f8cff 0%, #6ee2f5 100%);
+                font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            }
+            .main-card {
+                background: #fff;
+                border-radius: 1.5rem;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+                padding: 2.5rem 2rem;
+                margin-top: 4rem;
+                margin-bottom: 2rem;
+                transition: box-shadow 0.3s;
+            }
+            .main-card:hover {
+                box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.25);
+            }
+            .menu-btns a {
+                min-width: 140px;
+                font-size: 1.1rem;
+                border-radius: 2rem;
+                box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+                margin: 0.3rem;
+            }
+            .azure-title {
+                background: linear-gradient(90deg, #4f8cff, #6ee2f5);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                font-weight: 700;
+                font-size: 2.7rem;
+                margin-bottom: 1.2rem;
+            }
+        </style>
     </head>
     <body>
-        <div class="container mt-5">
+        <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 text-center">
-                    <h1 class="mb-4">Witaj na Global Azure 2025!</h1>
-                    <p class="lead">To przykładowy frontend z Bootstrapem.</p>
-                    {% if session.get('logged_in') %}
-                        <p class="text-success">Jesteś zalogowany jako <b>{{ session.get('username') }}</b></p>
-                        <a href="{{ url_for('logout') }}" class="btn btn-danger">Wyloguj</a>
-                    {% else %}
-                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Zaloguj się</a>
-                    {% endif %}
+                <div class="col-lg-7 col-md-9">
+                    <div class="main-card text-center">
+                        <div class="azure-title">Witaj na Global Azure 2025!</div>
+                        <p class="lead mb-4">Nowoczesny frontend z Bootstrapem i gradientem Azure.</p>
+                        {% if session.get('logged_in') %}
+                            <p class="text-success">Jesteś zalogowany jako <b>{{ session.get('username') }}</b></p>
+                            <div class="menu-btns mb-4">
+                                <a href="{{ url_for('blog') }}" class="btn btn-outline-primary">Blog</a>
+                                <a href="{{ url_for('add_post') }}" class="btn btn-outline-success">Dodaj post</a>
+                                <a href="{{ url_for('logout') }}" class="btn btn-danger">Wyloguj</a>
+                            </div>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg menu-btns">Zaloguj się</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
