@@ -48,7 +48,7 @@ resource "azurerm_storage_account" "example" {
 resource "azurerm_postgresql_flexible_server" "example" {
   name                   = "postgresql-server-user04"
   resource_group_name    = "rg-04"
-  location               = "westeurope"
+  location               = "polandcentral"
   administrator_login    = "pgadmin"
   administrator_password = "admin"
   sku_name               = "B_Standard_B1ms"
