@@ -68,4 +68,10 @@ resource "azurerm_postgresql_flexible_server_database" "usersdb" {
       PGPASSWORD = "admin"
     }
   }
+  provisioner "local-exec" {
+    command = "PGPASSWORD=admin psql -h ${azurerm_postgresql_flexible_server.example.fqdn} -U pgadmin -d usersdb -f ./init_blog.sql"
+    environment = {
+      PGPASSWORD = "admin"
+    }
+  }
 }
