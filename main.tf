@@ -46,7 +46,7 @@ resource "azurerm_storage_account" "example" {
 }
 
 resource "azurerm_container_group" "rabbitmq" {
-  name                = "rabbitmq-group"
+  name                = "registryuser04"
   location            = "westeurope"
   resource_group_name = "rg-04"
   os_type             = "Linux"
