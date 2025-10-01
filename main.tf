@@ -44,3 +44,22 @@ resource "azurerm_storage_account" "example" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 }
+
+resource "azurerm_postgresql_flexible_server" "example" {
+  name                   = "postgresql-server-user04"
+  resource_group_name    = "rg-04"
+  location               = "westeurope"
+  administrator_login    = "admin"
+  administrator_password = "admin"
+  sku_name               = "B_Standard_B1ms"
+  storage_mb             = 32768
+  version                = "13"
+  zone                   = "1"
+}
+
+resource "azurerm_postgresql_flexible_database" "usersdb" {
+  name      = "usersdb"
+  server_id = azurerm_postgresql_flexible_server.example.id
+  charset   = "UTF8"
+  collation = "en_US.utf8"
+}
