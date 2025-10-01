@@ -108,9 +108,15 @@ def login():
 from flask import jsonify
 @app.route('/api/login', methods=['POST'])
 def api_login():
-    data = request.get_json()
+    if not request.is_json:
+        return jsonify({'success': False, 'error': 'Request musi być typu application/json'}), 400
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({'success': False, 'error': 'Brak danych w żądaniu'}), 400
     username = data.get('username')
     password = data.get('password')
+    if not username or not password:
+        return jsonify({'success': False, 'error': 'Brak loginu lub hasła'}), 400
     try:
         conn = psycopg2.connect(
             host=DB_HOST,
