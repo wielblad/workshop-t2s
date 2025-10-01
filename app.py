@@ -1,7 +1,15 @@
 from flask import Flask, render_template_string, request, redirect, url_for, session
+import psycopg2
+
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
+
+# Konfiguracja połączenia z bazą PostgreSQL
+DB_HOST = "postgresql-server-postgres-user04.postgres.database.azure.com"
+DB_NAME = "usersdb"
+DB_USER = "pgadmin"
+DB_PASS = "admin"
 
 
 @app.route('/')
@@ -41,12 +49,27 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username == 'admin' and password == 'admin':
-            session['logged_in'] = True
-            session['username'] = username
-            return redirect(url_for('home'))
-        else:
-            error = 'Nieprawidłowy login lub hasło.'
+        try:
+            conn = psycopg2.connect(
+                host=DB_HOST,
+                dbname=DB_NAME,
+                user=DB_USER,
+                password=DB_PASS,
+                sslmode="require"
+            )
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+            user = cur.fetchone()
+            cur.close()
+            conn.close()
+            if user:
+                session['logged_in'] = True
+                session['username'] = username
+                return redirect(url_for('home'))
+            else:
+                error = 'Nieprawidłowy login lub hasło.'
+        except Exception as e:
+            error = f'Błąd połączenia z bazą: {e}'
     html = '''
     <!DOCTYPE html>
     <html lang="pl">
