@@ -89,5 +89,5 @@ jobs:
           az webapp config container set \
             --name example-webapp-user04 \
             --resource-group rg-04 \
-            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/example-webapp-user04:latest \
+            --docker-custom-image-name ${{ secrets.ACR_LOGIN_SERVER }}/example-webapp:latest \
             --docker-registry-server-url https://${{ secrets.ACR_LOGIN_SERVER }}
