@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=4.1.0"
+      version = ">=3.60.0"
     }
   }
 }
@@ -57,7 +57,7 @@ resource "azurerm_postgresql_flexible_server" "example" {
   zone                   = "1"
 }
 
-resource "azurerm_postgresql_flexible_database" "usersdb" {
+resource "azurerm_postgresql_flexible_server_database" "usersdb" {
   name      = "usersdb"
   server_id = azurerm_postgresql_flexible_server.example.id
   charset   = "UTF8"
