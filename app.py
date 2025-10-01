@@ -5,6 +5,16 @@ import psycopg2
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
+# Dekorator wymagający logowania
+from functools import wraps
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # Konfiguracja połączenia z bazą PostgreSQL
 DB_HOST = "postgresql-server-postgres-user04.postgres.database.azure.com"
 DB_NAME = "usersdb"
@@ -13,6 +23,7 @@ DB_PASS = "admin"
 
 
 @app.route('/')
+@login_required
 def home():
     html = '''
     <!DOCTYPE html>
@@ -86,7 +97,7 @@ def home():
 
 
 
-# Widok logowania z XHR
+ # Widok logowania z XHR
 @app.route('/login', methods=['GET'])
 def login():
     html = '''
@@ -181,6 +192,7 @@ def api_login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     session.clear()
     return redirect(url_for('home') )
@@ -189,6 +201,7 @@ def logout():
 
 # Wyświetlanie wszystkich postów z komentarzami
 @app.route('/blog')
+@login_required
 def blog():
     try:
         conn = psycopg2.connect(
@@ -270,6 +283,7 @@ def blog():
 
 # Dodawanie nowego posta
 @app.route('/blog/add', methods=['GET', 'POST'])
+@login_required
 def add_post():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
@@ -332,6 +346,7 @@ def add_post():
 
 # Dodawanie komentarza do posta
 @app.route('/blog/comment/<int:post_id>', methods=['POST'])
+@login_required
 def add_comment(post_id):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
