@@ -43,6 +43,8 @@ def home():
     </html>
     '''
     return render_template_string(html)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -105,12 +107,14 @@ def login():
     </body>
     </html>
     '''
+
     return render_template_string(html, error=error)
+
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('home'))
+    return redirect(url_for('home') )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

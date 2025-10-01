@@ -55,15 +55,6 @@ resource "azurerm_postgresql_flexible_server" "example" {
   storage_mb             = 32768
   version                = "13"
   zone                   = "1"
-  
-  dynamic "firewall_rule" {
-    for_each = ["allow_all"]
-    content {
-      name             = "AllowAllIPs"
-      start_ip_address = "0.0.0.0"
-      end_ip_address   = "255.255.255.255"
-    }
-  }
 }
 
 resource "azurerm_postgresql_flexible_server_database" "usersdb" {
