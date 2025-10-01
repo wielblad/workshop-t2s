@@ -45,33 +45,10 @@ def home():
     return render_template_string(html)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+
+# Widok logowania z XHR
+@app.route('/login', methods=['GET'])
 def login():
-    error = None
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        try:
-            conn = psycopg2.connect(
-                host=DB_HOST,
-                dbname=DB_NAME,
-                user=DB_USER,
-                password=DB_PASS,
-                sslmode="require"
-            )
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-            user = cur.fetchone()
-            cur.close()
-            conn.close()
-            if user:
-                session['logged_in'] = True
-                session['username'] = username
-                return redirect(url_for('home'))
-            else:
-                error = 'Nieprawidłowy login lub hasło.'
-        except Exception as e:
-            error = f'Błąd połączenia z bazą: {e}'
     html = '''
     <!DOCTYPE html>
     <html lang="pl">
@@ -86,10 +63,8 @@ def login():
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <h2 class="mb-4 text-center">Logowanie</h2>
-                    {% if error %}
-                        <div class="alert alert-danger">{{ error }}</div>
-                    {% endif %}
-                    <form method="post">
+                    <div id="error" class="alert alert-danger d-none"></div>
+                    <form id="loginForm">
                         <div class="mb-3">
                             <label for="username" class="form-label">Login</label>
                             <input type="text" class="form-control" id="username" name="username" required>
@@ -103,12 +78,60 @@ def login():
                 </div>
             </div>
         </div>
+        <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = data.error;
+                errorDiv.classList.remove('d-none');
+            }
+        });
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
     '''
+    return render_template_string(html)
 
-    return render_template_string(html, error=error)
+# Endpoint API do logowania
+from flask import jsonify
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASS,
+            sslmode="require"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
+        if user:
+            session['logged_in'] = True
+            session['username'] = username
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Nieprawidłowy login lub hasło.'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Błąd połączenia z bazą: {e}'})
 
 
 @app.route('/logout')
