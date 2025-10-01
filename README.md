@@ -28,3 +28,6 @@ This workshop showcased best practices for modern DevOps workflows with **Terraf
 
 ## 2. Log into Azure Account
     - Find your Resource Group
+
+
+test
