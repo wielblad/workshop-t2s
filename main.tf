@@ -49,7 +49,7 @@ resource "azurerm_postgresql_flexible_server" "example" {
   name                   = "postgresql-server-user04"
   resource_group_name    = "rg-04"
   location               = "westeurope"
-  administrator_login    = "admin"
+  administrator_login    = "pgadmin"
   administrator_password = "admin"
   sku_name               = "B_Standard_B1ms"
   storage_mb             = 32768
