@@ -44,33 +44,3 @@ resource "azurerm_storage_account" "example" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 }
-
-resource "azurerm_container_group" "rabbitmq" {
-  name                = "registryuser04"
-  location            = "westeurope"
-  resource_group_name = "rg-04"
-  os_type             = "Linux"
-
-  container {
-    name   = "rabbitmq"
-    image  = "rabbitmq:3-management"
-    cpu    = "1.0"
-    memory = "1.5"
-
-    ports {
-      port     = 5672
-      protocol = "TCP"
-    }
-    ports {
-      port     = 15672
-      protocol = "TCP"
-    }
-    environment_variables = {
-      RABBITMQ_DEFAULT_USER = "admin"
-      RABBITMQ_DEFAULT_PASS = "adminpassword"
-    }
-  }
-
-  ip_address_type = "Public"
-  dns_name_label  = "rabbitmquser04"
-}
